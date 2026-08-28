@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>宿泊施設○○ - お問い合わせ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>宿泊施設○○ - お問い合わせ</h1>
+
+        <nav>
+            <a href="index.html">ホーム</a>
+            <a href="rooms.html">客室</a>
+            <a href="amenities.html">設備</a>
+            <a href="plans.html">宿泊プラン</a>
+            <a href="access.html">アクセス</a>
+            <a href="news.html">お知らせ</a>
+            <a href="contact.html" class="active">お問い合わせ</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <img src="images/text_otoiawase.png" alt="お問い合わせ">
+
+        <h2>お問い合わせ</h2>
+
+        <p>
+            ご質問やご相談は、下記のフォームからお気軽にお問い合わせください。
+        </p>
+
+        <form action="submit_contact.php" method="post">
+            <label for="name">お名前:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">メールアドレス:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="message">お問い合わせ内容:</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+
+            <button type="submit">送信</button>
+        </form>
+
+    </main>
+
+    <footer>
+        <p>宿泊施設○○</p>
+        <p>〒656-1557 兵庫県淡路市明神○○</p>
+        <p>TEL: 00-0000-0000</p>
+        <p>&copy; 2026 宿泊施設○○</p>
+    </footer>
+
+</body>
+
+</html>
