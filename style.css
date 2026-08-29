@@ -59,3 +59,9 @@ footer {
 img {
     width: 100%;
 }
+
+iframe {
+    width: 100%;
+    max-width: 800px;
+    height: 450px;
+}
