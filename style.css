@@ -58,10 +58,42 @@ footer {
 
 img {
     width: 100%;
+    height: auto;
 }
 
 iframe {
     width: 100%;
     max-width: 800px;
     height: 450px;
+}
+
+@media (max-width: 600px) {
+
+    body {
+        padding-top: 110px;
+    }
+
+    main {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    nav a {
+        margin: 5px;
+        padding: 5px 8px;
+        font-size: 14px;
+    }
+
+    iframe {
+        height: 300px;
+    }
 }
