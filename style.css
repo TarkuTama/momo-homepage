@@ -14,6 +14,24 @@ h1 {
     color: #333333;
 }
 
+section {
+    margin-bottom: 50px;
+}
+
+section h2 {
+    margin-bottom: 20px;
+}
+
+section h3 {
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+.note {
+    font-size: 14px;
+    color: #666666;
+}
+
 nav {
     position: fixed;
     top: 0;
