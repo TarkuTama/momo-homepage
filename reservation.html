@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>明神宿　<ruby>百<rt>mo</rt></ruby><ruby>百<rt>mo</rt></ruby>。 - 宿泊予約</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>明神宿　<ruby>百<rt>mo</rt></ruby><ruby>百<rt>mo</rt></ruby>。 - 宿泊予約</h1>
+
+        <nav>
+            <a href="index.html" class="active">ホーム</a>
+            <a href="rooms.html">客室</a>
+            <a href="amenities.html">設備</a>
+            <a href="plans.html">宿泊プラン</a>
+            <a href="reservation.html" class="active">宿泊予約</a>
+            <a href="access.html">アクセス</a>
+            <a href="news.html">お知らせ</a>
+            <a href="contact.html">お問い合わせ</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <img src="images/text_yoyakuuketsukechu.png" alt="予約受付中">
+
+        <h1>宿泊予約</h1>
+
+        <form id="reservation-form">
+
+            <div class="form-group">
+                <label for="checkin">チェックイン</label>
+                <input type="date" id="checkin" required>
+            </div>
+
+            <div class="form-group">
+                <label for="checkout">チェックアウト</label>
+                <input type="date" id="checkout" required>
+            </div>
+
+            <div class="form-group">
+                <label for="guests">宿泊人数</label>
+                <input type="number" id="guests" min="1" required>
+            </div>
+
+            <button type="button">空室を確認する</button>
+
+        </form>
+
+    </main>
+
+    <footer>
+        <p>明神宿　<ruby>百<rt>mo</rt></ruby><ruby>百<rt>mo</rt></ruby>。</p>
+        <p>〒656-1557 兵庫県淡路市明神591</p>
+        <p>TEL: 070-3811-8358</p>
+        <p>&copy; 2026 明神宿　<ruby>百<rt>mo</rt></ruby><ruby>百<rt>mo</rt></ruby>。</p>
+    </footer>
+
+</body>
+
+
+
+</html>
