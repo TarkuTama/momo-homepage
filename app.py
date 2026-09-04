@@ -580,5 +580,16 @@ def admin_logout():
     return redirect(url_for("admin_login"))
 
 
+
+
+
+@app.route("/health")
+def health():
+    return "OK"
+
+
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
