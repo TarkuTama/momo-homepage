@@ -10,7 +10,7 @@ document.getElementById("check-button").addEventListener("click", async function
         return;
     }
 
-    const response = await fetch("http://127.0.0.1:5000/check-availability", {
+    const response = await fetch("http://192.168.0.6:5000/check-availability", {
         method: "POST",
 
         headers: {
@@ -77,7 +77,7 @@ document.getElementById("reserve-button").addEventListener("click", async functi
     }
 
 
-    const response = await fetch("http://127.0.0.1:5000/reserve", {
+    const response = await fetch("http://192.168.0.6:5000/reserve", {
 
         method: "POST",
 

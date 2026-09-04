@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import sqlite3
 import os
@@ -206,5 +206,37 @@ def reserve():
     })
 
 
+@app.route("/admin")
+def admin():
+
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            id,
+            name,
+            email,
+            phone,
+            checkin,
+            checkout,
+            guests,
+            total_price,
+            status
+        FROM reservations
+        ORDER BY checkin
+    """)
+
+    reservations = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        "admin.html",
+        reservations=reservations
+    )
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=5000)
