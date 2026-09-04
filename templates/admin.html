@@ -60,6 +60,7 @@
                 <th>人数</th>
                 <th>合計料金</th>
                 <th>状態</th>
+                <th>操作</th>
             </tr>
         </thead>
 
@@ -102,6 +103,15 @@
                     {% endif %}
                 </td>
 
+                <td>
+                    {% if reservation["status"] == "confirmed" %}
+                        <form action="{{ url_for('cancel_reservation', reservation_id=reservation['id']) }}" method="post">
+                            <button type="submit">キャンセル</button>
+                        </form>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
             </tr>
 
             {% endfor %}

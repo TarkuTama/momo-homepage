@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_cors import CORS
 import sqlite3
 import os
@@ -236,6 +236,24 @@ def admin():
         "admin.html",
         reservations=reservations
     )
+
+
+@app.route("/admin/cancel/<int:booking_id>", methods=["POST"])
+def admin_cancel_booking(booking_id):
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE reservations
+        SET status = 'cancelled'
+        WHERE id = ?
+    """, (booking_id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for("admin"))
 
 
 if __name__ == "__main__":
