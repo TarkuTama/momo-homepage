@@ -48,11 +48,75 @@
                 <input type="number" id="guests" min="1" required>
             </div>
 
-            <button type="button">空室を確認する</button>
+            <button type="button" id="check-button">空室を確認する</button>
 
         </form>
 
+        <p id="result"></p>
+
+
+
+
+
+        
+        <!-- 空室がある場合だけ表示 -->
+
+        <div id="price-info" style="display: none;">
+            <h2>宿泊料金</h2>
+            
+            <p>
+                宿泊数：
+                <span id="nights"></span>泊
+            </p>
+            
+            <p> 
+                1泊あたり：
+                <span id="price-per-night"></span>円
+            </p>
+
+            <p>
+                合計料金：
+                <strong>
+                    <span id="total-price"></span>円
+                </strong>
+            </p>
+        </div>
+        
+
+
+
+
+
+        <div id="customer-form" style="display: none;">
+
+        <h2>お客様情報</h2>
+
+        <div class="form-group">
+            <label for="name">お名前</label>
+            <input type="text" id="name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">メールアドレス</label>
+            <input type="email" id="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">電話番号</label>
+            <input type="tel" id="phone" required>
+        </div>
+
+        <button type="button" id="reserve-button">
+            予約を確定する
+        </button>
+
+    </div>
+
+    <p id="reserve-result"></p>
+
     </main>
+
+    <script src="reservation.js"></script>
 
     <footer>
         <p>明神宿　<ruby>百<rt>mo</rt></ruby><ruby>百<rt>mo</rt></ruby>。</p>
