@@ -1,8 +1,10 @@
 from datetime import datetime
 from functools import wraps
+from email.message import EmailMessage
 
 import os
 import sqlite3
+import smtplib
 
 from dotenv import load_dotenv
 from flask import (
@@ -110,14 +112,14 @@ def send_booking_email(
 ):
     message = EmailMessage()
 
-    message["Subject"] = "【明神宿 ○○】ご予約完了のお知らせ"
+    message["Subject"] = "【明神宿　百百】ご予約完了のお知らせ"
     message["From"] = MAIL_ADDRESS
     message["To"] = to_email
 
     body = f"""
 {name} 様
 
-この度は、明神宿 ○○をご予約いただきありがとうございます。
+この度は、明神宿　百百(momo)をご予約いただきありがとうございます。
 
 以下の内容でご予約を承りました。
 
@@ -129,7 +131,7 @@ def send_booking_email(
 
 ご来館を心よりお待ちしております。
 
-明神宿 ○○
+明神宿　百百(momo)
 """
 
     message.set_content(body)
