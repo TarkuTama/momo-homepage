@@ -61,6 +61,14 @@ nav a.active {
     border-bottom-color: #333333;
 }
 
+nav a.reserve {
+    font-weight: bold;
+    background-color: #333333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+}
+
 main {
     max-width: 1000px;
     margin: auto;
