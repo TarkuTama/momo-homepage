@@ -1,11 +1,77 @@
 from datetime import datetime
-from flask import Flask, request, jsonify, render_template, redirect, url_for
-from flask_cors import CORS
-import sqlite3
+from functools import wraps
+
 import os
+import sqlite3
+
+from dotenv import load_dotenv
+from flask import (
+    Flask,
+    request,
+    jsonify,
+    render_template,
+    redirect,
+    url_for,
+    session
+)
+from flask_cors import CORS
+from werkzeug.security import check_password_hash
+
+
+
+
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+
+app.secret_key = os.environ["SECRET_KEY"]
+
+ADMIN_USERNAME = os.environ["ADMIN_USERNAME"]
+ADMIN_PASSWORD_HASH = os.environ["ADMIN_PASSWORD_HASH"]
+
+MAIL_ADDRESS = os.environ["MAIL_ADDRESS"]
+MAIL_APP_PASSWORD = os.environ["MAIL_APP_PASSWORD"]
+
+def login_required(function):
+
+    @wraps(function)
+    def wrapper(*args, **kwargs):
+
+        if not session.get("admin_logged_in"):
+            return redirect(url_for("admin_login"))
+
+        return function(*args, **kwargs)
+
+    return wrapper
+
+
+@app.route("/admin/login", methods=["GET", "POST"])
+def admin_login():
+
+    error = None
+
+    if request.method == "POST":
+
+        username = request.form.get("username", "")
+        password = request.form.get("password", "")
+
+        if (
+            username == ADMIN_USERNAME
+            and check_password_hash(ADMIN_PASSWORD_HASH, password)
+        ):
+            session["admin_logged_in"] = True
+
+            return redirect(url_for("admin"))
+
+        error = "ユーザー名またはパスワードが違います。"
+
+    return render_template(
+        "login.html",
+        error=error
+    )
+
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -28,6 +94,57 @@ def calculate_price(checkin, checkout, guests):
     total_price = price_per_night * nights
 
     return nights, price_per_night, total_price
+
+
+
+
+
+def send_booking_email(
+    to_email,
+    name,
+    booking_id,
+    checkin,
+    checkout,
+    guests,
+    total_price
+):
+    message = EmailMessage()
+
+    message["Subject"] = "【明神宿 ○○】ご予約完了のお知らせ"
+    message["From"] = MAIL_ADDRESS
+    message["To"] = to_email
+
+    body = f"""
+{name} 様
+
+この度は、明神宿 ○○をご予約いただきありがとうございます。
+
+以下の内容でご予約を承りました。
+
+予約番号：{booking_id}
+チェックイン：{checkin}
+チェックアウト：{checkout}
+宿泊人数：{guests}名
+合計料金：{total_price:,}円
+
+ご来館を心よりお待ちしております。
+
+明神宿 ○○
+"""
+
+    message.set_content(body)
+
+    with smtplib.SMTP_SSL(
+        "smtp.gmail.com",
+        465
+    ) as smtp:
+
+        smtp.login(
+            MAIL_ADDRESS,
+            MAIL_APP_PASSWORD
+        )
+
+        smtp.send_message(message)
 
 
 
@@ -197,9 +314,40 @@ def reserve():
     conn.close()
 
 
+    # 予約完了メールを送信
+    try:
+        send_booking_email(
+            email,
+            name,
+            booking_id,
+            checkin,
+            checkout,
+            guests,
+            total_price
+        )
+
+        mail_sent = True
+
+    except Exception as e:
+        print("メール送信エラー:", e)
+        mail_sent = False
+
+    if mail_sent:
+        message = (
+            f"予約が完了しました。"
+            f"予約番号は {booking_id} です。"
+            "確認メールを送信しました。"
+        )
+    else:
+        message = (
+            f"予約が完了しました。"
+            f"予約番号は {booking_id} です。"
+            "ただし、確認メールの送信に失敗しました。"
+        )
+    
     return jsonify({
         "success": True,
-        "message": f"予約が完了しました。予約番号は {booking_id} です。",
+        "message": message,
         "nights": nights,
         "price_per_night": price_per_night,
         "total_price": total_price
@@ -207,6 +355,7 @@ def reserve():
 
 
 @app.route("/admin")
+@login_required
 def admin():
 
     conn = sqlite3.connect(DB_PATH)
@@ -238,7 +387,11 @@ def admin():
     )
 
 
-@app.route("/admin/cancel/<int:booking_id>", methods=["POST"])
+@app.route(
+    "/admin/cancel/<int:booking_id>",
+    methods=["POST"]
+)
+@login_required
 def admin_cancel_booking(booking_id):
 
     conn = sqlite3.connect(DB_PATH)
@@ -254,6 +407,15 @@ def admin_cancel_booking(booking_id):
     conn.close()
 
     return redirect(url_for("admin"))
+
+
+@app.route("/admin/logout")
+@login_required
+def admin_logout():
+
+    session.clear()
+
+    return redirect(url_for("admin_login"))
 
 
 if __name__ == "__main__":
