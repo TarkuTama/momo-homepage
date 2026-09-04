@@ -1,3 +1,5 @@
+const API_BASE = "https://momo-homepage.onrender.com";
+
 document.getElementById("check-button").addEventListener("click", async function () {
 
     const checkin = document.getElementById("checkin").value;
@@ -10,7 +12,7 @@ document.getElementById("check-button").addEventListener("click", async function
         return;
     }
 
-    const response = await fetch("http://127.0.0.1:5000/check-availability", {
+    const response = await fetch("https://momo-homepage.onrender.com/check-availability", {
         method: "POST",
 
         headers: {
@@ -77,7 +79,7 @@ document.getElementById("reserve-button").addEventListener("click", async functi
     }
 
 
-    const response = await fetch("http://127.0.0.1:5000/reserve", {
+    const response = await fetch("https://momo-homepage.onrender.com/reserve", {
 
         method: "POST",
 
