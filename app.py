@@ -152,6 +152,54 @@ def send_booking_email(
 
 
 
+def send_admin_booking_email(
+    name,
+    email,
+    phone,
+    booking_id,
+    checkin,
+    checkout,
+    guests,
+    total_price
+):
+    message = EmailMessage()
+
+    message["Subject"] = f"【新規予約】予約番号 {booking_id}"
+    message["From"] = MAIL_ADDRESS
+    message["To"] = MAIL_ADDRESS
+
+    body = f"""
+新しい予約が入りました。
+
+予約番号：{booking_id}
+お名前：{name}
+メールアドレス：{email}
+電話番号：{phone}
+
+チェックイン：{checkin}
+チェックアウト：{checkout}
+宿泊人数：{guests}名
+合計料金：{total_price:,}円
+"""
+
+    message.set_content(body)
+
+    with smtplib.SMTP_SSL(
+        "smtp.gmail.com",
+        465
+    ) as smtp:
+
+        smtp.login(
+            MAIL_ADDRESS,
+            MAIL_APP_PASSWORD
+        )
+
+        smtp.send_message(message)
+
+
+
+
+
 @app.route("/check-availability", methods=["POST"])
 def check_availability():
 
@@ -333,6 +381,24 @@ def reserve():
     except Exception as e:
         print("メール送信エラー:", e)
         mail_sent = False
+
+    # 管理者へ新規予約通知メールを送信
+    try:
+        send_admin_booking_email(
+            name,
+            email,
+            phone,
+            booking_id,
+            checkin,
+            checkout,
+            guests,
+            total_price
+        )
+
+    except Exception as e:
+        print("管理者メール送信エラー:", e)
+        admin_mail_sent = False
+
 
     if mail_sent:
         message = (
