@@ -105,7 +105,11 @@
 
                 <td>
                     {% if reservation["status"] == "confirmed" %}
-                        <form action="{{ url_for('cancel_reservation', reservation_id=reservation['id']) }}" method="post">
+                        <form
+                            action="{{ url_for('admin_cancel_booking', booking_id=reservation['id']) }}"
+                            method="POST"
+                            onsubmit="return confirm('この予約をキャンセルしますか？');"
+                        >
                             <button type="submit">キャンセル</button>
                         </form>
                     {% else %}
