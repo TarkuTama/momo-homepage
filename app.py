@@ -199,6 +199,52 @@ def send_admin_booking_email(
 
 
 
+def send_cancellation_email(
+    to_email,
+    name,
+    booking_id,
+    checkin,
+    checkout
+):
+    message = EmailMessage()
+
+    message["Subject"] = "【明神宿　百百】ご予約キャンセルのお知らせ"
+    message["From"] = MAIL_ADDRESS
+    message["To"] = to_email
+
+    body = f"""
+{name} 様
+
+ご予約のキャンセルを承りました。
+
+以下のご予約はキャンセルされています。
+
+予約番号：{booking_id}
+チェックイン：{checkin}
+チェックアウト：{checkout}
+
+ご予約いただきありがとうございました。
+
+明神宿　百百(momo)
+"""
+
+    message.set_content(body)
+
+    with smtplib.SMTP_SSL(
+        "smtp.gmail.com",
+        465
+    ) as smtp:
+
+        smtp.login(
+            MAIL_ADDRESS,
+            MAIL_APP_PASSWORD
+        )
+
+        smtp.send_message(message)
+
+
+
+
 
 @app.route("/check-availability", methods=["POST"])
 def check_availability():
@@ -263,6 +309,9 @@ def check_availability():
         "price_per_night": price_per_night,
         "total_price": total_price
     })
+
+
+
 
 
 @app.route("/reserve", methods=["POST"])
@@ -422,6 +471,9 @@ def reserve():
     })
 
 
+
+
+
 @app.route("/admin")
 @login_required
 def admin():
@@ -455,6 +507,9 @@ def admin():
     )
 
 
+
+
+
 @app.route(
     "/admin/cancel/<int:booking_id>",
     methods=["POST"]
@@ -463,8 +518,29 @@ def admin():
 def admin_cancel_booking(booking_id):
 
     conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
+    # キャンセルする予約の情報を取得
+    cursor.execute("""
+        SELECT
+            id,
+            name,
+            email,
+            checkin,
+            checkout,
+            status
+        FROM reservations
+        WHERE id = ?
+    """, (booking_id,))
+
+    reservation = cursor.fetchone()
+
+    if reservation is None:
+        conn.close()
+        return "予約が見つかりません。", 404
+
+    # 予約状態をキャンセルに変更
     cursor.execute("""
         UPDATE reservations
         SET status = 'cancelled'
@@ -474,7 +550,25 @@ def admin_cancel_booking(booking_id):
     conn.commit()
     conn.close()
 
+
+    # お客様へキャンセルメール
+    try:
+        send_cancellation_email(
+            reservation["email"],
+            reservation["name"],
+            reservation["id"],
+            reservation["checkin"],
+            reservation["checkout"]
+        )
+
+    except Exception as e:
+        print("キャンセルメール送信エラー:", e)
+
+
     return redirect(url_for("admin"))
+
+
+
 
 
 @app.route("/admin/logout")
